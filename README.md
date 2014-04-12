@@ -1,4 +1,1 @@
-samantha
-========
-
-wit.ai based personal assistance!
+wit.ai based personal assistant.
