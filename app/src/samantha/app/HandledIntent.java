@@ -1,5 +1,5 @@
 package samantha.app;
 
 public enum HandledIntent {
-    ALARM
+    ALARM, CALL
 }

@@ -34,8 +34,9 @@ public class AlarmHandler {
     private String getTimeField(JSONObject entities) {
         String time = entities.optString(TIME);
         int hour = Calendar.getInstance().get(Calendar.HOUR);
+        int hourOfDay = Calendar.getInstance().get(Calendar.HOUR_OF_DAY);
         int minute = Calendar.getInstance().get(Calendar.MINUTE);
-        _logger.logD("SAMXXXXX", "hour: " + hour + " minute: " + minute);
+        _logger.logD("SAMXXXXX", "hour: " + hour + " minute: " + minute + " hour of day: " + hourOfDay);
         return time;
     }
 

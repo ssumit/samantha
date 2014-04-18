@@ -3,6 +3,7 @@ package samantha.app;
 import android.app.Application;
 import android.widget.Toast;
 
+import java.util.Calendar;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.concurrent.Executors;
@@ -21,6 +22,10 @@ public class SamanthaApplication extends Application {
         _logger.logE("XXXXX", " this is initialized");
         handleDeviceCrashGraceFully();
         init();
+        int hour = Calendar.getInstance().get(Calendar.HOUR);
+        int hourOfDay = Calendar.getInstance().get(Calendar.HOUR_OF_DAY);
+        int minute = Calendar.getInstance().get(Calendar.MINUTE);
+        _logger.logD("SAMXXXXX", "hour: " + hour + " minute: " + minute + " hour of day: " + hourOfDay);
     }
 
     public static SamanthaApplication getInstance() {
@@ -66,7 +71,7 @@ public class SamanthaApplication extends Application {
             @Override
             public void run() {
                 InitAppHelper initAppHelper = new InitAppHelper();
-                initAppHelper.initApp();
+                initAppHelper.initApp(_this.getApplicationContext());
                 fireCallbacks();
             }
         };
