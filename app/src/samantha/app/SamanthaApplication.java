@@ -2,8 +2,8 @@ package samantha.app;
 
 import android.app.Application;
 import android.widget.Toast;
+import samantha.app.location.LocationHandler;
 
-import java.util.Calendar;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.concurrent.Executors;
@@ -19,17 +19,12 @@ public class SamanthaApplication extends Application {
     public void onCreate() {
         super.onCreate();
         _this = SamanthaApplication.this;
-        _logger.logE("XXXXX", " this is initialized");
         handleDeviceCrashGraceFully();
         init();
-        int hour = Calendar.getInstance().get(Calendar.HOUR);
-        int hourOfDay = Calendar.getInstance().get(Calendar.HOUR_OF_DAY);
-        int minute = Calendar.getInstance().get(Calendar.MINUTE);
-        _logger.logD("SAMXXXXX", "hour: " + hour + " minute: " + minute + " hour of day: " + hourOfDay);
+        LocationHandler.getInstance().printLocation();
     }
 
     public static SamanthaApplication getInstance() {
-        _logger.logE("XXXXX", " getinstance called (): " + _this);
         return _this;
     }
 
