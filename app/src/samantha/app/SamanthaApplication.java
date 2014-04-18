@@ -3,21 +3,32 @@ package samantha.app;
 import android.app.Application;
 import android.widget.Toast;
 
+import java.util.Set;
+import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 public class SamanthaApplication extends Application {
-    private SamLogger _logger = new SamLogger();
+    private static SamLogger _logger = new SamLogger();
+    private final static Set<Callback> _callbacks = new CopyOnWriteArraySet<Callback>();
+    private static SamanthaApplication _this;
+    private static boolean _isReady = false;
 
     public void onCreate() {
         super.onCreate();
+        _this = SamanthaApplication.this;
+        _logger.logE("XXXXX", " this is initialized");
         handleDeviceCrashGraceFully();
         init();
     }
 
-    private void handleDeviceCrashGraceFully()
-    {
+    public static SamanthaApplication getInstance() {
+        _logger.logE("XXXXX", " getinstance called (): " + _this);
+        return _this;
+    }
+
+    private void handleDeviceCrashGraceFully() {
         Thread.setDefaultUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler()
         {
             private boolean _CurrentlyCrashing = false;
@@ -45,8 +56,7 @@ public class SamanthaApplication extends Application {
         });
     }
 
-    private void killApplication()
-    {
+    private void killApplication() {
         android.os.Process.killProcess(android.os.Process.myPid());
         System.exit(10);
     }
@@ -57,8 +67,47 @@ public class SamanthaApplication extends Application {
             public void run() {
                 InitAppHelper initAppHelper = new InitAppHelper();
                 initAppHelper.initApp();
+                fireCallbacks();
             }
         };
         ExecutorUtil.scheduleNowOnAppThread(initRunnable);
     }
+
+    public boolean isReady() {
+        synchronized (_callbacks)
+        {
+            return _isReady;
+        }
+    }
+
+    private void fireCallbacks() {
+        synchronized (_callbacks) {
+            for (Callback callback : _callbacks) {
+                callback.onReady();
+            }
+            _isReady = true;
+            _callbacks.clear();
+        }
+    }
+
+    public void attachCallback(Callback callback)
+    {
+        synchronized (_callbacks)
+        {
+            if (_isReady)
+            {
+                callback.onReady();
+            } else
+            {
+                _callbacks.add(callback);
+            }
+        }
+    }
+
+    public interface Callback {
+        public void onReady();
+
+        public void onFailure();
+    }
+
 }

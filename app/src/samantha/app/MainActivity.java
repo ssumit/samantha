@@ -5,7 +5,6 @@ import ai.wit.sdk.Wit;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
 import android.text.Html;
 import android.text.method.ScrollingMovementMethod;
 import android.view.Menu;
@@ -17,18 +16,22 @@ import com.google.gson.JsonElement;
 
 import java.util.HashMap;
 
-public class MainActivity extends FragmentActivity implements IWitListener, IWitActivity {
+public class MainActivity extends BaseActivity implements IWitListener, IWitActivity {
 
     private static final int RESULT_SETTINGS = 1;
     private static Fragment _fragment;
     private SamLogger _logger = new SamLogger();
     private String LOG_TAG = MainActivity.class.getSimpleName();
     private static final String WIT_FRAGMENT = "wit_fragment";
+    private UserIntentHandler _userIntentHandler;
+    private ToastMaker _toastMaker;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+    public void onReady(Bundle savedInstanceState) {
+        super.onReady(savedInstanceState);
         setContentView(R.layout.activity_main);
+        _userIntentHandler = new UserIntentHandler();
+        _toastMaker = new ToastMaker(MainActivity.this);
 
         if (savedInstanceState == null) {
             _fragment = new BasicFragment();
@@ -86,5 +89,13 @@ public class MainActivity extends FragmentActivity implements IWitListener, IWit
         ((TextView) findViewById(R.id.jsonView)).setText(Html.fromHtml("<span><b>Intent: " + intent +
                 "<b></span><br/>") + jsonOutput +
                 Html.fromHtml("<br/><span><b>Confidence: " + confidence + "<b></span>"));
+        if (confidence > 0.5)
+        {
+            _userIntentHandler.handleUserIntent(intent, jsonOutput);
+        }
+        else
+        {
+            _toastMaker.showToast("Did you mean to " + intent + " Please do it again");
+        }
     }
 }
