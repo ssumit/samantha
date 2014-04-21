@@ -1,9 +1,11 @@
 package samantha.app.location;
 
 import android.content.Context;
+import android.location.Location;
 import samantha.app.SamLogger;
 import samantha.app.SamanthaApplication;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class LocationHandler {
@@ -33,8 +35,8 @@ public class LocationHandler {
         return _this;
     }
 
-    public void printLocation() {
-        List<String> list = _locationHelper.getLocationList(3);
+    public void addReminder(LocationReminder locationReminder) {
+        addReminder(locationReminder.getAction(), locationReminder.getLocation(), locationReminder.getEntity());
     }
 
     public void addReminder(String action, String location, String entity) {
@@ -43,5 +45,18 @@ public class LocationHandler {
 
     public List<LocationReminder> getReminders(String location) {
         return _store.getReminders(location);
+    }
+
+    public List<LocationReminder> getReminders(Location location) {
+        List<String> locationList = _locationHelper.getLocationList(2, location);
+        List<LocationReminder> locationReminders = new ArrayList<LocationReminder>();
+        for (String loc : locationList) {
+            locationReminders.addAll(getReminders(loc));
+        }
+       return locationReminders;
+    }
+
+    public void removeReminders(List<LocationReminder> reminders) {
+        _store.removeReminders(reminders);
     }
 }

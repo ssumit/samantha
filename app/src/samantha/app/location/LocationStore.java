@@ -44,6 +44,13 @@ public class LocationStore {
         return contentValues;
     }
 
+    public void removeReminders(List<LocationReminder> reminders) {
+        String whereClause = fields.location.name() + " = ?";
+        for (LocationReminder reminder : reminders) {
+            _sqLiteDatabase.delete(TABLE_NAME, whereClause, new String[]{reminder.getLocation()});
+        }
+    }
+
     public List<LocationReminder> getReminders(String location) {
         String whereClause = fields.location.name() + " = ?";
         String[] selectionArgs = new String[]{location};
@@ -61,6 +68,4 @@ public class LocationStore {
         }
         return reminders;
     }
-
-
 }

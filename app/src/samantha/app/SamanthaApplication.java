@@ -2,7 +2,6 @@ package samantha.app;
 
 import android.app.Application;
 import android.widget.Toast;
-import samantha.app.location.LocationHandler;
 
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
@@ -21,7 +20,6 @@ public class SamanthaApplication extends Application {
         _this = SamanthaApplication.this;
         handleDeviceCrashGraceFully();
         init();
-        LocationHandler.getInstance().printLocation();
     }
 
     public static SamanthaApplication getInstance() {

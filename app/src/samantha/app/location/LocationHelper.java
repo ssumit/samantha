@@ -2,7 +2,6 @@ package samantha.app.location;
 
 import android.content.Context;
 import android.location.*;
-import samantha.app.SamLogger;
 import samantha.app.SamanthaApplication;
 
 import java.io.IOException;
@@ -13,23 +12,29 @@ import java.util.Locale;
 public class LocationHelper {
 
     public List<String> getLocationList(int maxNoOfResult) {
-        List<String> locationList = new ArrayList<String>();
+        Location locations = getLocation();
+        return getLocationList(maxNoOfResult, locations);
+    }
+
+    private Location getLocation() {
         LocationManager locationManager = (LocationManager)getContext().getSystemService(Context.LOCATION_SERVICE);
         String provider = locationManager.getBestProvider(new Criteria(), true);
+        return locationManager.getLastKnownLocation(provider);
+    }
 
-        Location locations = locationManager.getLastKnownLocation(provider);
+    public List<String> getLocationList(int maxNoOfResult, Location location) {
+        LocationManager locationManager = (LocationManager)getContext().getSystemService(Context.LOCATION_SERVICE);
+        List<String> locationList = new ArrayList<String>();
         List<String> providerList = locationManager.getAllProviders();
-        SamLogger logger = new SamLogger();
-        if(locations!= null && providerList!= null && providerList.size()>0) {
-            double longitude = locations.getLongitude();
-            double latitude = locations.getLatitude();
+        if(location!= null && providerList!= null && providerList.size()>0) {
+            double longitude = location.getLongitude();
+            double latitude = location.getLatitude();
             Geocoder geocoder = new Geocoder(getContext(), Locale.getDefault());
             try {
                 List<Address> listAddresses = geocoder.getFromLocation(latitude, longitude, maxNoOfResult);
                 if(listAddresses != null) {
                     for (Address listAddress : listAddresses) {
-                        String location = listAddress.getAddressLine(0);
-                        locationList.add(location);
+                        locationList.add(listAddress.getAddressLine(0));
                     }
                 }
             } catch (IOException e) {
