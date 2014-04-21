@@ -6,12 +6,20 @@ Three things were attempted:
 2) Calling someone by name or number
 3) location based reminder.
 
-Following are the issues faced which have not been solved due to lack of time:
+Usage examples:
+Call Sam.
+Call 134.
+I want to call to Steve.
+remind me to buy oranges at K-Mart.
+
+
+Following are the issues faced some of which have not been solved due to lack of time:
 1) It is difficult to capture time like 6:15 (quarter past six).
 2) Number two ("2") becomes "to".
 3) Before using API, sometimes we need to pre-process the data. When calling uer says call 81303 and we might have some
 spaces in between along with point (2).
 4) Locations might not be what user has in mind so again an intelligent filtering required.
+5) Identifying nouns especially non-english
 
 Other comments:
 I was working on IntelliJ idea. I used the sdk though one can easily write a wrapper over http API provided.
